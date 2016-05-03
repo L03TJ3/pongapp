@@ -5,14 +5,7 @@ import NewGameComponent from './components/NewGameComponent';
 import GameListComponent from './components/GameListComponent';
 import PlayerMoveComponent from './components/PlayerMoveComponent';
 import Utils from './lib/Utils';
-
-const canvasStyles = {
-    width:"500px",
-    height:"500px",
-    border: "1px solid #999",
-    margin: "10px auto",
-    display: "block",
-   }
+import CanvasComponent from './components/CanvasComponent';
 
 class App extends React.Component {
   constructor() {
@@ -27,28 +20,21 @@ class App extends React.Component {
       playerStorage = null;
     }
 
-    let canvas = document.getElementById("board");
-
-
     this.state = {
       games: [],
       currentGame: null,
       currentPlayer: playerStorage,
       playerMove: "" ,
-      originalPosition: {},
-      playerPosition: { x: 250, y: 250 },
-      ballPosition: newBallPosition(),
-      direction: "right",
-      speed: 200,
+
 
     };
   }
 
-  newBallPosition() {
-    let x = Math.max((Math.floor(Math.random() * 10) * 50) - 10, 0);
-    let y = Math.max((Math.floor(Math.random() * 10) * 50) - 10, 0);
-      return { x: x, y: y };
-        }
+  // newBallPosition() {
+  //   let x = Math.max((Math.floor(Math.random() * 10) * 50) - 10, 0);
+  //   let y = Math.max((Math.floor(Math.random() * 10) * 50) - 10, 0);
+  //     return { x: x, y: y };
+  //       }
 
 
 
@@ -122,9 +108,8 @@ class App extends React.Component {
           <NewGameComponent onCreate={this.createGame.bind(this)}/> }
 
           { this.state.currentGame !== null &&
-            <div className="game">
-            <canvas style={canvasStyles} id="board" />
-
+            <div id="game" className="game">
+              <CanvasComponent />
           { this.state.currentGame.winner === null && <div>
 
                </div> }

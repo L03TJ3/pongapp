@@ -2,9 +2,123 @@
 <html>
   <head>
     <title>Rock Paper Scissors</title>
+    <style>
+  canvas {
+    border: 1px solid #999;
+    margin: 10px auto;
+    display: block;
+  }
+
+  .stats {
+    text-align: center;
+  }
+</style>
   </head>
   <body>
-    <div id="root"></div>
-    <script src="/static/bundle.js"></script>
+    <canvas id="board" width="500px" height="500px">
+
+      <script>
+        var canvas = document.getElementById("board");
+        var ctx = canvas.getContext("2d");
+        var originalPosition = {};
+ var playerPosition = { x: 250, y: 250 };
+ var tailLength = 0;
+ var tailPositions = [];
+ var foodPosition   = newFoodPosition();
+ var direction = "right";
+ var speed = 200;
+
+ function newFoodPosition() {
+   var x = Math.max((Math.floor(Math.random() * 10) * 50) - 10, 0);
+   var y = Math.max((Math.floor(Math.random() * 10) * 50) - 10, 0);
+   return { x: x, y: y };
+ }
+
+ function renderBlock(position, color) {
+   ctx.fillStyle = color;
+   ctx.fillRect(position.x, position.y, 10, 10);
+
+ }
+
+ function movePlayer() {
+   originalPosition = {
+     x: playerPosition.x,
+     y: playerPosition.y
+   };
+
+   switch (direction) {
+     case "up":
+       playerPosition.y = playerPosition.y === 0 ? window.location.reload() : playerPosition.y -= 10;
+       break;
+     case "down":
+       playerPosition.y = playerPosition.y === 490 ? window.location.reload() : playerPosition.y += 10;
+       break;
+     case "left":
+       playerPosition.x = playerPosition.x === 0 ? window.location.reload() : playerPosition.x -= 10;
+       break;
+     case "right":
+       playerPosition.x = playerPosition.x === 490 ? window.location.reload() : playerPosition.x += 10;
+       break;
+   }
+
+   tailPositions.unshift(originalPosition);
+   eatsFood();
+
+   setTimeout(function() {
+     movePlayer();
+   }, speed);
+ }
+
+ function eatsFood() {
+   if (playerPosition.x === foodPosition.x &&
+       playerPosition.y === foodPosition.y) {
+     if (++tailLength % 3 === 0) {
+       speed = Math.max(speed - 5, 15);
+     }
+     foodPosition = newFoodPosition();
+     return true;
+   }
+
+   return false;
+ }
+
+ function redraw() {
+   ctx.clearRect(0, 0, canvas.width, canvas.height);
+   renderBlock(foodPosition, "#f33");
+   renderBlock(playerPosition, "green");
+   setTimeout(function() {
+     redraw();
+   }, 30);
+ }
+
+ function checkKey(e) {
+   e = e || window.event;
+   if (e.keyCode == '38') {
+     e.preventDefault();
+     direction = "up";
+   }
+   else if (e.keyCode == '40') {
+     e.preventDefault();
+     direction = "down";
+   }
+   else if (e.keyCode == '37') {
+     e.preventDefault();
+     direction = "left";
+   }
+   else if (e.keyCode == '39') {
+     e.preventDefault();
+     direction = "right";
+   }
+ }
+
+ document.onkeydown = checkKey;
+
+ movePlayer();
+ redraw();
+
+      </script>
+
+    <!-- <div id="root"></div>
+    <script src="/static/bundle.js"></script> -->
   </body>
 </html>
