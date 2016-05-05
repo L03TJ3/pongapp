@@ -30,14 +30,6 @@ class App extends React.Component {
     };
   }
 
-  // newBallPosition() {
-  //   let x = Math.max((Math.floor(Math.random() * 10) * 50) - 10, 0);
-  //   let y = Math.max((Math.floor(Math.random() * 10) * 50) - 10, 0);
-  //     return { x: x, y: y };
-  //       }
-
-
-
   updateList() {
     this.setState({
       games: this.games.resources
@@ -90,6 +82,10 @@ class App extends React.Component {
     });
   }
 
+  saveGame(game, props) {
+    this.games.save(game, props);
+  }
+
   render() {
     console.log(this.state);
     return (
@@ -108,24 +104,12 @@ class App extends React.Component {
           <NewGameComponent onCreate={this.createGame.bind(this)}/> }
 
           { this.state.currentGame !== null &&
-            <div id="game" className="game">
-              <CanvasComponent />
-          { this.state.currentGame.winner === null && <div>
-
-               </div> }
-
-           { this.state.currentGame.winner !== null &&
-             <div>
-                 <h1>{this.state.currentGame.winner} won!</h1>
-                 <p>{this.winnerSentence()}</p>
-             </div> }
-
-
+              <CanvasComponent game={this.state.currentGame} player={this.state.currentPlayer}  onChange={this.saveGame.bind(this)}/>}
 
         <div>
            <button onClick={this.clearCurrentGame.bind(this)}>Back</button>
          </div>
-      </div>}
+
     </div>
     );
   }

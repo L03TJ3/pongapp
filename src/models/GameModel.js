@@ -5,14 +5,32 @@ class GameModel extends BaseModel {
     return {
       playerOne: null,
       playerTwo: null,
-      playerOneMove: null,
-      playerTwoMove: null,
+      playerOneBat: {
+        position: {
+          x: 250,
+          y: 0
+        }
+      },
+      playerTwoBat: {
+        position: {
+          x: 250,
+          y: 0
+        }
+      },
+      ball: {
+        position: {
+          x: 250,
+          y: 250
+        },
+        calcX: 0,
+        calcY: 15
+      },
       winner: null
     };
   }
 
   constructor() {
-    super('game');
+    super('ponggame');
   }
 }
 
