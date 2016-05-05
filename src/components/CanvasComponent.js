@@ -6,6 +6,7 @@ const Surface = ReactCanvas.Surface;
 const Image = ReactCanvas.Image;
 const Text = ReactCanvas.Text;
 const ball = require("../images/ball.jpg");
+const batt1 = require("../images/batt1.jpg")
 
 class CanvasComponent extends React.Component {
 
@@ -25,7 +26,6 @@ class CanvasComponent extends React.Component {
 
   moveBall(){
     if (this.state.newPos === null) {
-      console.log(ball);
       this.state.newPos = this.props.game.ball.position;
     }
     if (this.state.newPos === null) {
@@ -107,6 +107,15 @@ class CanvasComponent extends React.Component {
     };
   }
 
+  getBatStyle(){
+    return {
+      top: 10,
+      left: 10,
+      width: 100,
+      height: 100
+    };
+  }
+
   getTextStyle(){
     return {
       top: 10,
@@ -119,17 +128,19 @@ class CanvasComponent extends React.Component {
   }
 
   render() {
-    let surfaceWidth = 500;
+    let surfaceWidth = 800;
     let surfaceHeight = 500;
     let surfaceBorder = 1;
     let imageStyle = this.getImageStyle();
     let textStyle = this.getTextStyle();
+    let batStyle = this.getBatStyle();
 
     return (
     <div className='canvas' style={{border: '1px solid black',
-    width: 500, height: 500, 'marginLeft': 200}}>
+    width: 800, height: 500, 'marginLeft': 200}}>
       <Surface width={surfaceWidth} height={surfaceHeight} left={0} top={0}>
         <Image style={imageStyle} src={ball} />
+        <Image style={batStyle} src={batt1} />
       </Surface>
     </div>
     );

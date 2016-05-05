@@ -22,8 +22,8 @@ class GameModel extends BaseModel {
           x: 250,
           y: 250
         },
-        calcX: 0,
-        calcY: 15
+        calcX: 15,
+        calcY: 0
       },
       winner: null
     };
