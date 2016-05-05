@@ -6,23 +6,97 @@ const Surface = ReactCanvas.Surface;
 const Image = ReactCanvas.Image;
 const Text = ReactCanvas.Text;
 const ball = require("../images/ball.jpg");
-const batt1 = require("../images/batt1.jpg")
+const battOne = require("../images/batone.png");
+const battTwo = require("../images/battwo.png");
+
 
 class CanvasComponent extends React.Component {
 
   constructor() {
     super();
-
     this.state = {
-      newPos: null
+      newPos: null,
+      newPosOneBat: null,
+      newPosTwoBat: null
     };
-    this.speed = 30;
+    this.speed = 50;
   }
 
   componentDidMount(){
     this.repaint();
     this.moveBall();
+    window.addEventListener('keydown', this.moveBat.bind(this));
+}
+
+  moveBat(event){
+  let position = this.props.game.playerOneBat.position;
+  let positionTwo = this.props.game.playerTwoBat.position;
+
+    if (event.keyCode == '38') {
+      event.preventDefault();
+
+      if (position.y <= 0) {
+        return;
+      }
+      else {
+        position.y -= 10;
+        this.setState({
+          newPosOneBat: {
+            x: position.x,
+            y: position.y
+          }
+        });
+      }
+
   }
+    if (event.keyCode == '40') {
+      event.preventDefault();
+      if (position.y >= 400) {
+        return;
+      }
+      else {
+        position.y += 10;
+        this.setState({
+          newPosOneBat: {
+            x: position.x,
+            y: position.y
+          }
+        });
+      }
+    }
+
+    if (event.keyCode == '87') {
+      event.preventDefault();
+      if (positionTwo.y <= 0) {
+        return;
+      }
+      else {
+        positionTwo.y -= 10;
+        this.setState({
+          newPosTwoBat: {
+            x: positionTwo.x,
+            y: positionTwo.y
+          }
+        });
+      }
+    }
+
+    if (event.keyCode == '83') {
+      event.preventDefault();
+      if (positionTwo.y >= 400) {
+        return;
+      }
+      else {
+        positionTwo.y += 10;
+        this.setState({
+          newPosTwoBat: {
+            x: positionTwo.x,
+            y: positionTwo.y
+          }
+        });
+      }
+    }
+}
 
   moveBall(){
     if (this.state.newPos === null) {
@@ -37,10 +111,29 @@ class CanvasComponent extends React.Component {
     let calcY = this.props.game.ball.calcY;
     let newX = currentPos.x + calcX;
     let newY = currentPos.y + calcY;
+    let batPos = this.props.game.playerOneBat.position;
 
-    if (newX >= 800 || newX <= 0) {
-      newX = Math.max(currentPos.x -calcX, 10);
-      calcX = -calcX;
+    if (newX >= 760 || newX <= 40 ) {
+      if ( this.hitsBallTwo(newX, newY) || this.hitsBall(newX, newY)){
+        let hitDistance = this.hitPosition(newY);
+
+        newX = Math.max(currentPos.x -calcX, 10);
+        calcX = -calcX;
+        calcY = hitDistance;
+      }
+
+      else {
+        // window.alert("start again");
+        this.props.game.ball.calcY = 0;
+        this.setState({
+          newPos: {
+            x: 400,
+            y: 250,
+          }
+        });
+        return this.moveBall();
+      }
+
     }
 
     if (newY >= 500 || newY <= 0) {
@@ -71,6 +164,26 @@ class CanvasComponent extends React.Component {
       }.bind(this), this.speed);
   }
 
+  hitsBall(x, y) {
+    let batPosition = this.props.game.playerOneBat.position;
+    return batPosition.y - 40 < y && batPosition.y + 40 > y;
+  }
+
+  hitPosition(y){
+    let batPosition = this.props.game.playerOneBat.position;
+    return batPosition.y - y;
+  }
+
+  hitsBallTwo(x, y) {
+    let batPosition = this.props.game.playerTwoBat.position;
+    return batPosition.y - 40 < y && batPosition.y + 40 > y;
+  }
+
+  hitPositionTwo(y){
+    let batPosition = this.props.game.playerTwoBat.position;
+    return batPosition.y - y;
+  }
+
   drawBall() {
     let position = this.state.newPos;
     if (position === null) {
@@ -89,13 +202,13 @@ class CanvasComponent extends React.Component {
     return Math.round(window.innerHeight / 2);
   }
 
-  getImageStyle(){
+  getBallStyle(){
     let position = this.state.newPos;
 
     if (position == null) {
       position = {
-        x: 0,
-        y: 0,
+        x: 250,
+        y: 250,
       };
     }
 
@@ -107,13 +220,25 @@ class CanvasComponent extends React.Component {
     };
   }
 
-  getBatStyle(){
+  getBatOneStyle(){
+    let batPosOne = this.props.game.playerOneBat.position;
     return {
-      top: 10,
-      left: 10,
+      top: batPosOne.y,
+      left: batPosOne.x,
       width: 100,
       height: 100
     };
+  }
+
+  getBatTwoStyle(){
+    let batPosTwo = this.props.game.playerTwoBat.position;
+
+    return {
+      top: batPosTwo.y,
+      left: batPosTwo.x,
+      width: 100,
+      height: 100
+    }
   }
 
   getTextStyle(){
@@ -131,16 +256,19 @@ class CanvasComponent extends React.Component {
     let surfaceWidth = 800;
     let surfaceHeight = 500;
     let surfaceBorder = 1;
-    let imageStyle = this.getImageStyle();
+    let ballStyle = this.getBallStyle();
     let textStyle = this.getTextStyle();
-    let batStyle = this.getBatStyle();
+    let batOneStyle = this.getBatOneStyle();
+    let batTwoStyle = this.getBatTwoStyle();
 
     return (
     <div className='canvas' style={{border: '1px solid black',
     width: 800, height: 500, 'marginLeft': 200}}>
       <Surface width={surfaceWidth} height={surfaceHeight} left={0} top={0}>
-        <Image style={imageStyle} src={ball} />
-        <Image style={batStyle} src={batt1} />
+        <Image style={ballStyle} src={ball} />
+        <Image style={batOneStyle} src={battOne} />
+        <Image style={batTwoStyle} src={battTwo} />
+
       </Surface>
     </div>
     );

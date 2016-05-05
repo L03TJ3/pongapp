@@ -7,14 +7,14 @@ class GameModel extends BaseModel {
       playerTwo: null,
       playerOneBat: {
         position: {
-          x: 250,
-          y: 0
+          x: 10,
+          y: 220
         }
       },
       playerTwoBat: {
         position: {
-          x: 250,
-          y: 0
+          x: 690,
+          y: 220
         }
       },
       ball: {
