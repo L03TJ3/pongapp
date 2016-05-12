@@ -114,14 +114,20 @@ class CanvasComponent extends React.Component {
     let batPos = this.props.game.playerOneBat.position;
 
     if (newX >= 760 || newX <= 40 ) {
-      if ( this.hitsBallTwo(newX, newY) || this.hitsBall(newX, newY)){
+      if ( this.hitsBall(newX, newY)){
         let hitDistance = this.hitPosition(newY);
 
         newX = Math.max(currentPos.x -calcX, 10);
         calcX = -calcX;
         calcY = hitDistance;
       }
+      else if ( this.hitsBallTwo(newX, newY)){
+        let hitDistance = this.hitPositionTwo(newY);
 
+        newX = Math.max(currentPos.x -calcX, 10);
+        calcX = -calcX;
+        calcY = hitDistance;
+      }
       else {
         // window.alert("start again");
         this.props.game.ball.calcY = 0;
